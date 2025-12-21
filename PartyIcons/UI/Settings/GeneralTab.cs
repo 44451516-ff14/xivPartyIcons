@@ -73,7 +73,7 @@ public sealed class Notice
 
     public Notice()
     {
-        DownloadAndParseNotice();
+        // DownloadAndParseNotice();
     }
 
     private void DownloadAndParseNotice()

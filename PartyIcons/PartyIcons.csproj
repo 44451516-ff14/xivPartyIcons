@@ -6,6 +6,11 @@
         <Copyright>shdwp 2021</Copyright>
         <PackageProjectUrl>https://github.com/nebel/xivPartyIcons</PackageProjectUrl>
         <Version>1.2.3.2</Version>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <OutputPath>C:\Games\FF14\Dalamud\XIVLauncher\devPlugins\PartyIcons\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
