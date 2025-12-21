@@ -19,52 +19,52 @@ public static class UpgradeGuideTab
         var buttonSize = new Vector2(100f, 80f) * ImGuiHelpers.GlobalScale;
 
         using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.ParsedGreen)) {
-            ImGui.TextWrapped("Party Icons Upgrade Guide (for version 1.2)");
+            ImGui.TextWrapped("队伍图标升级指南（适用于版本 1.2）");
         }
 
-        ImGui.TextWrapped("The Dawntrail update of Party Icons brings some changes to how status icons are displayed.");
+        ImGui.TextWrapped("Party Icons 的 Dawntrail 更新对状态图标的显示方式进行了一些更改。");
         using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey2)) {
-            ImGui.TextWrapped("(Status icons are the icons for online statuses such as Disconnected, Viewing Cutscene, Waiting for Duty, Mentor, New Adventurer (sprout), and so on.)");
+            ImGui.TextWrapped("（状态图标是在线状态的图标，例如断开连接、观看过场动画、等待副本、导师、新冒险者（豆芽）等。）");
         }
-        ImGui.TextWrapped("From this version, it's now possible to display both job icons and status icons together, and to customize this setting for each nameplate display type.");
+        ImGui.TextWrapped("从这个版本开始，现在可以同时显示职业图标和状态图标，并且可以为每种名牌显示类型自定义此设置。");
 
         ImGuiExt.Spacer(8);
         using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudYellow)) {
-            ImGui.TextWrapped("How would you like status icons to be displayed?");
+            ImGui.TextWrapped("您希望如何显示状态图标？");
         }
         ImGuiExt.Spacer(8);
 
-        if (ImGui.Button("Use the new\n    defaults", buttonSize)) {
+        if (ImGui.Button("使用新的\n    默认值", buttonSize)) {
             UseNewDefaults();
         }
         ImGui.SameLine();
-        ImGui.TextWrapped("In duties, certain important statuses are swapped with the job icon, but otherwise mostly hidden. In the overworld, most statuses are displayed in their own status icon slot.");
+        ImGui.TextWrapped("在副本中，某些重要的状态会与职业图标交换，但大多数情况下是隐藏的。在野外，大多数状态会在自己的状态图标槽位中显示。");
         ImGui.Separator();
 
-        if (ImGui.Button("Replicate the\n  old priority\n      system", buttonSize)) {
+        if (ImGui.Button("复制旧的\n  优先系统", buttonSize)) {
             ReplicatePriority();
         }
         ImGui.SameLine();
-        ImGui.TextWrapped("Certain important status icons (like Disconnected, AFK or Viewing Cutscene) replace job icons entirely when appropriate, but status icons are otherwise hidden.");
+        ImGui.TextWrapped("某些重要的状态图标（如断开连接、离开或观看过场动画）在适当时会完全替换职业图标，但状态图标在其他情况下是隐藏的。");
         ImGui.Separator();
 
-        if (ImGui.Button(" Don't show\nstatus icons\n      at all", buttonSize)) {
+        if (ImGui.Button("完全不显示\n  状态图标", buttonSize)) {
             NoIcons();
         }
         ImGui.SameLine();
-        ImGui.TextWrapped("Only job icons will be displayed.");
+        ImGui.TextWrapped("仅显示职业图标。");
         ImGui.Separator();
 
         if (ForceRedisplay) {
-            if (ImGui.Button("Cancel", buttonSize)) {
+            if (ImGui.Button("取消", buttonSize)) {
                 Cancel();
             }
             ImGui.SameLine();
-            ImGui.TextWrapped("No changes will be made.");
+            ImGui.TextWrapped("不会进行任何更改。");
             ImGui.Separator();
         }
 
-        ImGui.TextWrapped("Please select one of the above options to continue. You can bring this window up again from the General tab, or customize status icon visibility in much greater detail from the Appearance and Status Icons tabs.");
+        ImGui.TextWrapped("请选择上述选项之一以继续。您可以从\"通用\"标签页再次打开此窗口，或者从\"外观\"和\"状态图标\"标签页更详细地自定义状态图标可见性。");
     }
 
     private static void UseNewDefaults()

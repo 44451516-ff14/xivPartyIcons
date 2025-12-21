@@ -45,7 +45,7 @@ public sealed class NameplateTab
     {
         ImGui.Dummy(new Vector2(0, 2f));
 
-        ImGui.Text("Icon set:");
+        ImGui.Text("图标集：");
         ImGui.SameLine();
         ImGuiExt.SetComboWidth(Enum.GetValues<IconSetId>().Select(UiNames.GetName));
 
@@ -56,14 +56,14 @@ public sealed class NameplateTab
         });
 
         var iconSizeMode = Plugin.Settings.SizeMode;
-        ImGui.Text("Nameplate size:");
+        ImGui.Text("名牌大小：");
         ImGui.SameLine();
-        ImGuiExt.SetComboWidth(Enum.GetValues<NameplateSizeMode>().Select(x => x.ToString()));
+        ImGuiExt.SetComboWidth(Enum.GetValues<NameplateSizeMode>().Select(x => UiNames.GetName(x)));
 
-        using (var combo = ImRaii.Combo("##icon_size", iconSizeMode.ToString())) {
+        using (var combo = ImRaii.Combo("##icon_size", UiNames.GetName(iconSizeMode))) {
             if (combo) {
                 foreach (var mode in Enum.GetValues<NameplateSizeMode>()) {
-                    if (ImGui.Selectable(mode + "##icon_set_" + mode)) {
+                    if (ImGui.Selectable(UiNames.GetName(mode) + "##icon_set_" + mode)) {
                         Plugin.Settings.SizeMode = mode;
                         Plugin.Settings.Save();
                     }
@@ -71,16 +71,16 @@ public sealed class NameplateTab
             }
         }
 
-        ImGuiComponents.HelpMarker("Affects all presets, except Game Default.");
+        ImGuiComponents.HelpMarker("影响所有预设，除了游戏默认。");
 
         if (Plugin.Settings.SizeMode == NameplateSizeMode.Custom) {
             var scale = Plugin.Settings.SizeModeCustom;
-            if (ImGui.SliderFloat("Custom scale", ref scale, 0.3f, 3f)) {
+            if (ImGui.SliderFloat("自定义缩放", ref scale, 0.3f, 3f)) {
                 Plugin.Settings.SizeModeCustom = Math.Clamp(scale, 0.1f, 10f);
                 Plugin.Settings.Save();
             }
 
-            ImGuiComponents.HelpMarker("Hold Control and click the slider to input an exact value");
+            ImGuiComponents.HelpMarker("按住Control并点击滑块以输入精确值");
         }
 
         var hideLocalNameplate = Plugin.Settings.HideLocalPlayerNameplate;
@@ -90,64 +90,64 @@ public sealed class NameplateTab
         }
 
         ImGui.SameLine();
-        ImGui.Text("Hide own nameplate");
+        ImGui.Text("隐藏自己的名牌");
         ImGuiComponents.HelpMarker(
-            "You can turn your own nameplate on and also turn this\nsetting own to only use nameplate to display own raid position.\nIf you don't want your position displayed with this setting you can simply disable\nyour nameplates in the Character settings.");
+            "您可以开启自己的名牌，同时开启此设置，仅使用名牌来显示自己的团队位置。\n如果您不想显示位置，可以简单地在角色设置中禁用名牌。");
 
         ImGuiExt.Spacer(6);
 
-        ImGuiExt.SectionHeader("Overworld");
+        ImGuiExt.SectionHeader("野外");
         using (ImRaii.PushIndent(15f)) {
             NameplateModeSection("##np_overworld", () => Plugin.Settings.DisplaySelectors.DisplayOverworld,
                 sel => Plugin.Settings.DisplaySelectors.DisplayOverworld = sel,
-                "Party:");
+                "队伍：");
 
             NameplateModeSection("##np_others", () => Plugin.Settings.DisplaySelectors.DisplayOthers,
                 sel => Plugin.Settings.DisplaySelectors.DisplayOthers = sel,
-                "Others:");
+                "其他：");
         }
 
-        ImGuiExt.SectionHeader("Instances");
+        ImGuiExt.SectionHeader("副本");
         using (ImRaii.PushIndent(15f)) {
             NameplateModeSection("##np_dungeon", () => Plugin.Settings.DisplaySelectors.DisplayDungeon,
                 (sel) => Plugin.Settings.DisplaySelectors.DisplayDungeon = sel,
-                "Dungeon:");
+                "地下城：");
 
             NameplateModeSection("##np_raid", () => Plugin.Settings.DisplaySelectors.DisplayRaid,
                 sel => Plugin.Settings.DisplaySelectors.DisplayRaid = sel,
-                "Raid:");
+                "团队副本：");
 
             NameplateModeSection("##np_alliance", () => Plugin.Settings.DisplaySelectors.DisplayAllianceRaid,
                 sel => Plugin.Settings.DisplaySelectors.DisplayAllianceRaid = sel,
-                "Alliance:");
+                "大型任务：");
 
             NameplateModeSection("##np_chaotic", () => Plugin.Settings.DisplaySelectors.DisplayChaoticRaid,
                sel => Plugin.Settings.DisplaySelectors.DisplayChaoticRaid = sel,
-               "Chaotic:");
+               "混乱副本：");
         }
 
-        ImGuiExt.SectionHeader("Field Operations");
+        ImGuiExt.SectionHeader("特殊区域");
 
         using (ImRaii.PushIndent(15f)) {
-            ImGui.TextDisabled("e.g. Eureka, Bozja");
+            ImGui.TextDisabled("例如：优雷卡、博兹雅");
 
             NameplateModeSection("##np_field_party", () => Plugin.Settings.DisplaySelectors.DisplayFieldOperationParty,
-                sel => Plugin.Settings.DisplaySelectors.DisplayFieldOperationParty = sel, "Party:");
+                sel => Plugin.Settings.DisplaySelectors.DisplayFieldOperationParty = sel, "队伍：");
 
             NameplateModeSection("##np_field_others",
                 () => Plugin.Settings.DisplaySelectors.DisplayFieldOperationOthers,
-                sel => Plugin.Settings.DisplaySelectors.DisplayFieldOperationOthers = sel, "Others:");
+                sel => Plugin.Settings.DisplaySelectors.DisplayFieldOperationOthers = sel, "其他：");
         }
 
         ImGuiExt.SectionHeader("PvP");
 
         using (ImRaii.PushIndent(15f)) {
-            ImGui.TextDisabled("This plugin is intentionally disabled during PvP matches.");
+            ImGui.TextDisabled("此插件在PvP比赛中被有意禁用。");
         }
 
         ImGuiExt.Spacer(15);
 
-        if (ImGui.CollapsingHeader("Examples")) {
+        if (ImGui.CollapsingHeader("示例")) {
             foreach (var kv in _nameplateExamples) {
                 CollapsibleExampleImage(kv.Key, kv.Value);
             }
@@ -162,7 +162,7 @@ public sealed class NameplateTab
     }
 
     private static void NameplateModeSection(string label, Func<DisplaySelector> getter, Action<DisplaySelector> setter,
-        string title = "Nameplate: ")
+        string title = "名牌：")
     {
         ImGui.SetCursorPosY(ImGui.GetCursorPos().Y + 3f);
         ImGui.Text(title);

@@ -13,7 +13,7 @@ public class CommandHandler : IDisposable
         Service.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
         {
             HelpMessage =
-                "opens configuration window; \"reset\" or \"r\" resets all assignments"
+                "打开配置窗口；\"reset\" 或 \"r\" 重置所有分配"
         });
     }
     
@@ -35,13 +35,13 @@ public class CommandHandler : IDisposable
             Plugin.RoleTracker.ResetOccupations();
             Plugin.RoleTracker.ResetAssignments();
             Plugin.RoleTracker.CalculateUnassignedPartyRoles();
-            Service.ChatGui.Print("Occupations are reset, roles are auto assigned.", Service.PluginInterface.InternalName, 45);
+            Service.ChatGui.Print("职位已重置，角色已自动分配。", Service.PluginInterface.InternalName, 45);
         }
         else if (arguments == "dbg r")
         {
             Plugin.RoleTracker.ResetOccupations();
             Plugin.RoleTracker.ResetAssignments();
-            Service.ChatGui.Print("Occupations/assignments are reset.", Service.PluginInterface.InternalName, 45);
+            Service.ChatGui.Print("职位/分配已重置。", Service.PluginInterface.InternalName, 45);
         }
         else if (arguments == "dbg state")
         {

@@ -10,14 +10,14 @@ public static class UiNames
     {
         return mode switch
         {
-            NameplateMode.Default => "Game default",
-            NameplateMode.Hide => "Hide",
-            NameplateMode.BigJobIcon => "Big job icon",
-            NameplateMode.SmallJobIcon => "Small job icon and name",
-            NameplateMode.SmallJobIconAndRole => "Small job icon, role and name",
-            NameplateMode.BigJobIconAndPartySlot => "Big job icon and party number",
-            NameplateMode.RoleLetters => "Role letters",
-            _ => $"Unknown ({(int)mode}/{mode.ToString()})"
+            NameplateMode.Default => "游戏默认",
+            NameplateMode.Hide => "隐藏",
+            NameplateMode.BigJobIcon => "大职业图标",
+            NameplateMode.SmallJobIcon => "小职业图标和名称",
+            NameplateMode.SmallJobIconAndRole => "小职业图标、角色和名称",
+            NameplateMode.BigJobIconAndPartySlot => "大职业图标和队伍编号",
+            NameplateMode.RoleLetters => "角色字母",
+            _ => $"未知 ({(int)mode}/{mode.ToString()})"
         };
     }
 
@@ -25,13 +25,13 @@ public static class UiNames
     {
         return zoneType switch
         {
-            ZoneType.Overworld => "Overworld",
-            ZoneType.Dungeon => "Dungeon",
-            ZoneType.Raid => "Raid",
-            ZoneType.AllianceRaid => "Alliance Raid",
-            ZoneType.ChaoticRaid => "Chaotic Raid",
-            ZoneType.FieldOperation => "Field Operation",
-            _ => $"Unknown ({(int)zoneType}/{zoneType.ToString()})"
+            ZoneType.Overworld => "野外",
+            ZoneType.Dungeon => "地下城",
+            ZoneType.Raid => "团队副本",
+            ZoneType.AllianceRaid => "大型任务",
+            ZoneType.ChaoticRaid => "混乱副本",
+            ZoneType.FieldOperation => "特殊区域",
+            _ => $"未知 ({(int)zoneType}/{zoneType.ToString()})"
         };
     }
 
@@ -39,11 +39,11 @@ public static class UiNames
     {
         return config.Preset switch
         {
-            StatusPreset.Custom => config.Name ?? "<unnamed>",
-            StatusPreset.Overworld => "Overworld",
-            StatusPreset.Instances => "Instances",
-            StatusPreset.FieldOperations => "Field Operations",
-            StatusPreset.OverworldLegacy => "Overworld (Legacy)",
+            StatusPreset.Custom => config.Name ?? "<未命名>",
+            StatusPreset.Overworld => "野外",
+            StatusPreset.Instances => "副本",
+            StatusPreset.FieldOperations => "特殊区域",
+            StatusPreset.OverworldLegacy => "野外（旧版）",
             _ => config.Preset + "/" + config.Name + "/" + config.Id
         };
     }
@@ -71,12 +71,12 @@ public static class UiNames
     {
         return id switch
         {
-            IconSetId.EmbossedFramed => "Framed, role colored",
-            IconSetId.EmbossedFramedSmall => "Framed, role colored (small)",
-            IconSetId.Gradient => "Gradient, role colored",
-            IconSetId.Glowing => "Glowing",
-            IconSetId.Embossed => "Embossed",
-            IconSetId.Inherit => "<Use global setting>",
+            IconSetId.EmbossedFramed => "带框，角色颜色",
+            IconSetId.EmbossedFramedSmall => "带框，角色颜色（小）",
+            IconSetId.Gradient => "渐变，角色颜色",
+            IconSetId.Glowing => "发光",
+            IconSetId.Embossed => "浮雕",
+            IconSetId.Inherit => "<使用全局设置>",
             _ => id.ToString()
         };
     }
@@ -85,9 +85,9 @@ public static class UiNames
     {
         return mode switch
         {
-            ChatMode.GameDefault => "Game Default",
-            ChatMode.Role => "Role",
-            ChatMode.Job => "Job abbreviation",
+            ChatMode.GameDefault => "游戏默认",
+            ChatMode.Role => "角色",
+            ChatMode.Job => "职业缩写",
             _ => throw new ArgumentException($"Unknown chat mode {mode}")
         };
     }
@@ -96,10 +96,44 @@ public static class UiNames
     {
         return style switch
         {
-            RoleDisplayStyle.None => "None",
-            RoleDisplayStyle.Role => "Role",
-            RoleDisplayStyle.PartyNumber => "Party Number",
+            RoleDisplayStyle.None => "无",
+            RoleDisplayStyle.Role => "角色",
+            RoleDisplayStyle.PartyNumber => "队伍编号",
             _ => throw new ArgumentException($"Unknown RoleDisplayStyle {style}")
+        };
+    }
+
+    public static string GetName(StatusVisibility visibility)
+    {
+        return visibility switch
+        {
+            StatusVisibility.Hide => "隐藏",
+            StatusVisibility.Show => "显示",
+            StatusVisibility.Important => "重要",
+            _ => visibility.ToString()
+        };
+    }
+
+    public static string GetName(StatusSwapStyle style)
+    {
+        return style switch
+        {
+            StatusSwapStyle.None => "无",
+            StatusSwapStyle.Swap => "交换",
+            StatusSwapStyle.Replace => "替换",
+            _ => style.ToString()
+        };
+    }
+
+    public static string GetName(NameplateSizeMode mode)
+    {
+        return mode switch
+        {
+            NameplateSizeMode.Smaller => "较小",
+            NameplateSizeMode.Medium => "中等",
+            NameplateSizeMode.Bigger => "较大",
+            NameplateSizeMode.Custom => "自定义",
+            _ => mode.ToString()
         };
     }
 }
