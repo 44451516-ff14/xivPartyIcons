@@ -58,7 +58,7 @@ public sealed class PartyListHUDUpdater : IDisposable
             if (hudPartyMember->ContentId > 0) {
                 var name = hudPartyMember->Name;
                 var worldId = GetWorldId(hudPartyMember);
-                var hasRole = _roleTracker.TryGetAssignedRole(name, worldId, out var roleId);
+                var hasRole = _roleTracker.TryGetAssignedRole(name.ToString(), worldId, out var roleId);
                 if (hasRole) {
                     var index = hudPartyMember->Index;
                     var arrayIndex = NumberStructStartIndex + NumberStructSize * index;

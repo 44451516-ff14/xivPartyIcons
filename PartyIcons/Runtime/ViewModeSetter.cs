@@ -72,7 +72,7 @@ public sealed class ViewModeSetter
         Disable();
     }
 
-    private void OnTerritoryChanged(ushort e)
+    private void OnTerritoryChanged(uint u)
     {
         var maybeContent =
             _contentFinderConditionsSheet.FirstOrNull(t => t.TerritoryType.RowId == Service.ClientState.TerritoryType);

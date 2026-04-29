@@ -48,7 +48,7 @@ public class FlashingText
         return _flashColor0;
     }
 
-    public ImRaii.Color PushColor(bool isFlashing)
+    public ImRaii.ColorDisposable PushColor(bool isFlashing)
     {
         IsFlashing = isFlashing;
         return ImRaii.PushColor(ImGuiCol.Text, GetColor(), IsFlashing);

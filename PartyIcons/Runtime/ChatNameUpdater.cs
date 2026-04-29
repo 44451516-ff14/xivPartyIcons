@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dalamud.Game.Chat;
+using System;
 using System.Linq;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.Text;
@@ -30,15 +31,13 @@ public sealed class ChatNameUpdater : IDisposable
         Service.ChatGui.ChatMessage += OnChatMessage;
     }
 
-    private void OnChatMessage(XivChatType type, int timestamp, ref SeString sender, ref SeString message,
-        ref bool isHandled)
-    {
+    private void OnChatMessage(IHandleableChatMessage message) {
         if (Service.ClientState.IsPvP) {
             return;
         }
 
-        if (type is XivChatType.Say or XivChatType.Party or XivChatType.Alliance or XivChatType.Shout or XivChatType.Yell) {
-            Parse(type, ref sender);
+        if (message.LogKind is XivChatType.Say or XivChatType.Party or XivChatType.Alliance or XivChatType.Shout or XivChatType.Yell) {
+            Parse(message);
         }
     }
 
@@ -133,12 +132,14 @@ public sealed class ChatNameUpdater : IDisposable
         return senderJob is { RowId: 0 } ? null : senderJob;
     }
 
-    private void Parse(XivChatType chatType, ref SeString sender)
+    private void Parse(IHandleableChatMessage message)
     {
+        var sender = message.Sender;
+
         if (GetPlayerPayload(sender) is not { } playerPayload)
             return;
 
-        var isGroupChat = chatType is XivChatType.Party or XivChatType.Alliance;
+        var isGroupChat = message.LogKind is XivChatType.Party or XivChatType.Alliance;
 
         ChatConfig config;
         GroupPrefix? groupPrefix;
