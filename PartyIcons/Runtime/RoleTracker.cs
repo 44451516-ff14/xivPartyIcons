@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dalamud.Game.Chat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -298,17 +299,15 @@ public sealed class RoleTracker : IDisposable
         }
     }
 
-    private void OnChatMessage(XivChatType type, int timestamp, ref SeString sender, ref SeString message,
-        ref bool isHandled)
+    // private void OnChatMessage(XivChatType type, int timestamp, ref SeString sender, ref SeString message, ref bool isHandled)
+    private void OnChatMessage(IHandleableChatMessage message)
     {
-        if (_configuration.AssignFromChat && (type == XivChatType.Party || type == XivChatType.CrossParty || type == XivChatType.Say))
+        if (_configuration.AssignFromChat && message.LogKind is XivChatType.Party or XivChatType.CrossParty or XivChatType.Say)
         {
             string? playerName = null;
             uint? playerWorld = null;
 
-            var playerPayload = sender.Payloads.FirstOrDefault(p => p is PlayerPayload) as PlayerPayload;
-
-            if (playerPayload == null)
+            if (message.Sender.Payloads.FirstOrDefault(p => p is PlayerPayload) is not PlayerPayload playerPayload)
             {
                 playerName = Service.PlayerState.CharacterName;
                 playerWorld = Service.PlayerState.HomeWorld.RowId;
@@ -321,12 +320,12 @@ public sealed class RoleTracker : IDisposable
 
             if (playerName == null || !playerWorld.HasValue)
             {
-                Service.Log.Verbose($"RoleTracker: Failed to get player data from {sender} at {timestamp} ({sender.Payloads})");
+                Service.Log.Verbose($"RoleTracker: Failed to get player data from {message.Sender} at {message.Timestamp} ({message.Sender.Payloads})");
 
                 return;
             }
 
-            var text = message.TextValue.Trim().ToLower();
+            var text = message.Message.TextValue.Trim().ToLower();
             var paddedText = $" {text} ";
 
             var roleToOccupy = RoleId.Undefined;

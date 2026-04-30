@@ -72,7 +72,7 @@ public sealed class ViewModeSetter
         Disable();
     }
 
-    private void OnTerritoryChanged(ushort e)
+    private void OnTerritoryChanged(uint u)
     {
         var maybeContent =
             _contentFinderConditionsSheet.FirstOrNull(t => t.TerritoryType.RowId == Service.ClientState.TerritoryType);
@@ -107,8 +107,8 @@ public sealed class ViewModeSetter
 
             var memberType = content.ContentMemberType.RowId;
 
-            if (content.TerritoryType.ValueNullable is { TerritoryIntendedUse.RowId: 41 or 48 }) {
-                // Bozja/Eureka
+            if (content.TerritoryType.ValueNullable is { TerritoryIntendedUse.RowId: 41 or 48 or 61 }) {
+                // Bozja/Eureka/OccultCrescent
                 memberType = 127;
             }
 
