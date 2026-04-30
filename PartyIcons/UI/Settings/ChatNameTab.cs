@@ -65,7 +65,7 @@ public static class ChatNameTab
         {
             NewConf = getter();
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException)
         {
             setter(NewConf);
             Plugin.Settings.Save();

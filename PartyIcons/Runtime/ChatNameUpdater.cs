@@ -24,6 +24,8 @@ public sealed class ChatNameUpdater : IDisposable
     {
         _roleTracker = roleTracker;
         _stylesheet = stylesheet;
+        PartyMode = new ChatConfig(ChatMode.GameDefault);
+        OthersMode = new ChatConfig(ChatMode.GameDefault);
     }
 
     public void Enable()
