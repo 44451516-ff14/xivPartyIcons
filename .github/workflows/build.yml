@@ -1,0 +1,90 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    runs-on: windows-latest
+    env:
+      PROJECT_FILE: PartyIcons/PartyIcons.csproj
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Get Plugin Version
+        run: |
+          [xml]$project = Get-Content -Raw -Encoding UTF8 $env:PROJECT_FILE
+          $version = $project.SelectSingleNode('//Version').InnerText
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            throw "Version not found in $env:PROJECT_FILE"
+          }
+          "plugin_version=$version" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
+
+      - name: Download Dalamud Latest
+        run: |
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
+          Expand-Archive -Force latest.zip -DestinationPath "$env:AppData\XIVLauncherCN\addon\Hooks\dev"
+
+      - name: Restore Project
+        run: dotnet restore $env:PROJECT_FILE
+
+      - name: Build Project
+        run: dotnet build --no-restore --configuration Release $env:PROJECT_FILE --output .\build\
+
+      - name: Find Plugin Package
+        run: |
+          $zip = Get-ChildItem .\build -Recurse -Filter *.zip | Select-Object -First 1
+          if ($null -eq $zip) {
+            throw 'No plugin zip was produced by the build.'
+          }
+          New-Item -ItemType Directory -Force -Path .\artifacts | Out-Null
+          Copy-Item -LiteralPath $zip.FullName -Destination ".\artifacts\PartyIcons-${{ env.plugin_version }}.zip"
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PartyIcons-${{ env.plugin_version }}-${{ github.run_number }}-${{ github.sha }}
+          path: .\artifacts\PartyIcons-${{ env.plugin_version }}.zip
+          if-no-files-found: error
+
+      - name: Publish Version Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ env.plugin_version }}
+          name: ${{ env.plugin_version }}
+          target_commitish: ${{ github.sha }}
+          files: ./artifacts/PartyIcons-${{ env.plugin_version }}.zip
+          fail_on_unmatched_files: true
+          overwrite_files: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger DalamudPlugins
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          $headers = @{
+            Authorization = "Bearer ${{ secrets.DALAMUD_PLUGINS_TOKEN }}"
+            Accept = "application/vnd.github+json"
+            "X-GitHub-Api-Version" = "2022-11-28"
+          }
+          $body = @{ ref = "master" } | ConvertTo-Json
+          Invoke-WebRequest `
+            -Method Post `
+            -Headers $headers `
+            -ContentType "application/json" `
+            -Body $body `
+            -Uri "https://api.github.com/repos/44451516-ff14/DalamudPlugins/actions/workflows/main.yml/dispatches" | Out-Null
